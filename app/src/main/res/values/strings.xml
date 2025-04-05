@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TravelApp</string>
+    <string name="introTitle">Khám phá<font color='#3f95ec'>\nThế Giới</font> cùng chúng tôi</string>
+    <string name="subIntro">Hãy cùng chúng tôi trải nghiệm và\n
+        khám phá những điều tuyệt vời trên thế giới.</string>
+
+</resources>
