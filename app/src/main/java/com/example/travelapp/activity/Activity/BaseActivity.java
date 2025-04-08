@@ -1,4 +1,4 @@
-package com.example.travelapp.Activity;
+package com.example.travelapp.activity.Activity;
 
 import android.os.Bundle;
 import android.view.Window;
