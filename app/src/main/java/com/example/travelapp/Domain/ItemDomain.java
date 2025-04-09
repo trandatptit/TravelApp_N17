@@ -1,4 +1,4 @@
-package com.example.travelapp.activity.Domain;
+package com.example.travelapp.Domain;
 
 import java.io.Serializable;
 

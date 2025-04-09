@@ -1,4 +1,4 @@
-package com.example.travelapp.activity.Activity;
+package com.example.travelapp.Activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,14 +12,14 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.travelapp.R;
-import com.example.travelapp.activity.Adapter.CategoryAdapter;
-import com.example.travelapp.activity.Adapter.PopularAdapter;
-import com.example.travelapp.activity.Adapter.RecommentdedAdapter;
-import com.example.travelapp.activity.Adapter.SliderAdapter;
-import com.example.travelapp.activity.Domain.Category;
-import com.example.travelapp.activity.Domain.ItemDomain;
-import com.example.travelapp.activity.Domain.Location;
-import com.example.travelapp.activity.Domain.SliderItems;
+import com.example.travelapp.Adapter.CategoryAdapter;
+import com.example.travelapp.Adapter.PopularAdapter;
+import com.example.travelapp.Adapter.RecommentdedAdapter;
+import com.example.travelapp.Adapter.SliderAdapter;
+import com.example.travelapp.Domain.Category;
+import com.example.travelapp.Domain.ItemDomain;
+import com.example.travelapp.Domain.Location;
+import com.example.travelapp.Domain.SliderItems;
 import com.example.travelapp.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

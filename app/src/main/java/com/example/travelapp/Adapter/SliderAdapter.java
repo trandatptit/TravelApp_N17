@@ -1,4 +1,4 @@
-package com.example.travelapp.activity.Adapter;
+package com.example.travelapp.Adapter;
 
 
 import android.content.Context;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
-import com.example.travelapp.activity.Domain.SliderItems;
+import com.example.travelapp.Domain.SliderItems;
 import com.example.travelapp.R;
 
 import java.util.ArrayList;

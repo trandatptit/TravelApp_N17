@@ -1,4 +1,4 @@
-package com.example.travelapp.activity.Domain;
+package com.example.travelapp.Domain;
 
 
 public class Category {

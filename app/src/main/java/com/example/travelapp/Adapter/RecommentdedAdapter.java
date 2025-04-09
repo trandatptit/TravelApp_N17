@@ -1,4 +1,4 @@
-package com.example.travelapp.activity.Adapter;
+package com.example.travelapp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,30 +11,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 //import com.example.travelapp.activity.Activity.DetailActivity;
-import com.example.travelapp.activity.Domain.ItemDomain;
-import com.example.travelapp.databinding.ViewholderPopularBinding;
+import com.example.travelapp.Domain.ItemDomain;
+import com.example.travelapp.databinding.ViewholderRecommendedBinding;
 
 import java.util.ArrayList;
 
-public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewholder> {
+public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapter.Viewholder> {
     ArrayList<ItemDomain> items;
     Context context;
-    ViewholderPopularBinding binding;
+    ViewholderRecommendedBinding binding;
 
-    public PopularAdapter(ArrayList<ItemDomain> items) {
+    public RecommentdedAdapter(ArrayList<ItemDomain> items) {
         this.items = items;
     }
 
     @NonNull
     @Override
-    public PopularAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding = ViewholderPopularBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public RecommentdedAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        binding = ViewholderRecommendedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         context = parent.getContext();
         return new Viewholder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PopularAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull RecommentdedAdapter.Viewholder holder, int position) {
         binding.titleTxt.setText(items.get(position).getTitle());
         binding.priceTxt.setText(" $" + items.get(position).getPrice());
         binding.addressTxt.setText(items.get(position).getAddress());
@@ -61,7 +61,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        public Viewholder(ViewholderPopularBinding binding) {
+        public Viewholder(ViewholderRecommendedBinding binding) {
             super(binding.getRoot());
         }
     }

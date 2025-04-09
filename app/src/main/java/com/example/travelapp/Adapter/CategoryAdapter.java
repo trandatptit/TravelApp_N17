@@ -1,5 +1,4 @@
-package com.example.travelapp.activity.Adapter;
-
+package com.example.travelapp.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.travelapp.activity.Domain.Category;
+import com.example.travelapp.Domain.Category;
 import com.example.travelapp.R;
 import com.example.travelapp.databinding.ViewholderCategoryBinding;
 
@@ -63,6 +62,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             holder.binding.title.setVisibility(View.GONE);
         }
     }
+
     @Override
     public int getItemCount() {
         return items.size();
