@@ -16,6 +16,7 @@ public class ItemDomain implements Serializable {
     private int bed;
     private String distance;
     private double score;
+    private String dateTour;
 
     public ItemDomain() {
     }
@@ -122,5 +123,13 @@ public class ItemDomain implements Serializable {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    public String getDateTour() {
+        return dateTour;
+    }
+
+    public void setDateTour(String dateTour) {
+        this.dateTour = dateTour;
     }
 }
