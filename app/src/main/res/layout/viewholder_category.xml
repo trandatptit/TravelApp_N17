@@ -19,18 +19,18 @@
         app:srcCompat="@drawable/grey_bg" />
 
     <TextView
-        android:text="Title"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
-        android:layout_gravity="center"
+        android:text="Title"
         android:textColor="@color/black"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:textSize="15sp"
         android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible"
 
         />
 </LinearLayout>
