@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">TravelApp</string>
-    <string name="introTitle">Khám phá<font color='#3f95ec'>\nThế Giới</font> cùng chúng tôi</string>
+    <string name="introTitle"><font color='#253f66'>Khám phá</font> <font color='#3f95ec'>\nThế Giới</font> <font color='#253f66'>cùng chúng tôi</font></string>
     <string name="subIntro">Hãy cùng chúng tôi trải nghiệm và\n
         khám phá những điều tuyệt vời trên thế giới.</string>
 
+    <string name="default_web_client_id">218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com</string>
 </resources>
