@@ -51,12 +51,11 @@ public class DetailActivity extends BaseActivity {
                 .into(binding.pic);
 
         binding.addToCartBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
+            // Chuyển sang PaymentActivity và truyền dữ liệu sản phẩm (nam thêm)
+            Intent intent = new Intent(DetailActivity.this, PaymentActivity.class);
             intent.putExtra("object", object);
             startActivity(intent);
         });
-
-
     }
 
     private void getIntentExtra() {
