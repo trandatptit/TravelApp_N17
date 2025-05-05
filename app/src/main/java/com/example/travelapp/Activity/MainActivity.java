@@ -49,47 +49,48 @@ public class MainActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Cấu hình Google Sign-In (giống như trong LoginActivity)
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Lấy từ strings.xml
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // Xử lý sự kiện nút "Đăng xuất"
-        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
+//        // Cấu hình Google Sign-In (giống như trong LoginActivity)
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id)) // Lấy từ strings.xml
+//                .requestEmail()
+//                .build();
+//
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//
+//        // Xử lý sự kiện nút "Đăng xuất"
+//        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
 
         // Các hàm khởi tạo khác
+        initLocation();
         initBanner();
         initCategory();
         initRecommentded();
         initPopular();
     }
 
-    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
-    private void showSignOutDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Xác nhận đăng xuất")
-                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
-                .setPositiveButton("Đồng ý", (dialog, which) -> signOut()) // Xác nhận đăng xuất
-                .setNegativeButton("Hủy", null) // Hủy bỏ đăng xuất
-                .setCancelable(true)
-                .show();
-    }
-
-    // ========== ĐĂNG XUẤT ==========
-    private void signOut() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            FirebaseAuth.getInstance().signOut();  // Đăng xuất Firebase
-            Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
-
-            // Chuyển hướng về màn hình đăng nhập
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish(); // Kết thúc màn hình hiện tại
-        });
-    }
+//    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
+//    private void showSignOutDialog() {
+//        new AlertDialog.Builder(this)
+//                .setTitle("Xác nhận đăng xuất")
+//                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+//                .setPositiveButton("Đồng ý", (dialog, which) -> signOut()) // Xác nhận đăng xuất
+//                .setNegativeButton("Hủy", null) // Hủy bỏ đăng xuất
+//                .setCancelable(true)
+//                .show();
+//    }
+//
+//    // ========== ĐĂNG XUẤT ==========
+//    private void signOut() {
+//        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+//            FirebaseAuth.getInstance().signOut();  // Đăng xuất Firebase
+//            Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+//
+//            // Chuyển hướng về màn hình đăng nhập
+//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//            finish(); // Kết thúc màn hình hiện tại
+//        });
+//    }
 
     private void initPopular() {
         DatabaseReference myRef = database.getReference("Popular");
@@ -178,28 +179,28 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-//    private void initLocation() {
-//        DatabaseReference myRef = database.getReference("Location");
-//        ArrayList<Location> list = new ArrayList<>();
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    for(DataSnapshot issue:snapshot.getChildren()){
-//                        list.add(issue.getValue(Location.class));
-//                    }
-//                    ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
-//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    binding.locationSp.setAdapter(adapter);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
+    private void initLocation() {
+        DatabaseReference myRef = database.getReference("Location");
+        ArrayList<Location> list = new ArrayList<>();
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot issue:snapshot.getChildren()){
+                        list.add(issue.getValue(Location.class));
+                    }
+                    ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    binding.locationSp.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     private void banners(ArrayList<SliderItems> items){
         binding.viewPagerSlider.setAdapter(new SliderAdapter(items, binding.viewPagerSlider));
