@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapter.Viewholder> {
     ArrayList<ItemDomain> items;
     Context context;
-    ViewholderRecommendedBinding binding;
 
     public RecommentdedAdapter(ArrayList<ItemDomain> items) {
         this.items = items;
@@ -27,31 +26,29 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
 
     @NonNull
     @Override
-    public RecommentdedAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding = ViewholderRecommendedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+        ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.inflate(LayoutInflater.from(context), parent, false);
         return new Viewholder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecommentdedAdapter.Viewholder holder, int position) {
-        binding.titleTxt.setText(items.get(position).getTitle());
-        binding.priceTxt.setText(" $" + items.get(position).getPrice());
-        binding.addressTxt.setText(items.get(position).getAddress());
-        binding.scoreTxt.setText("" + items.get(position).getScore());
+    public void onBindViewHolder(@NonNull Viewholder holder, int position) {
+        ItemDomain item = items.get(position);
+
+        holder.binding.titleTxt.setText(item.getTitle());
+        holder.binding.priceTxt.setText(" $" + item.getPrice());
+        holder.binding.addressTxt.setText(item.getAddress());
+        holder.binding.scoreTxt.setText("" + item.getScore());
 
         Glide.with(context)
-                .load(items.get(position).getPic())
-                .into(binding.pic);
+                .load(item.getPic())
+                .into(holder.binding.pic);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("object", items.get(position));
-                context.startActivity(intent);
-
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("object", item);
+            context.startActivity(intent);
         });
     }
 
@@ -61,8 +58,11 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
+        ViewholderRecommendedBinding binding;
+
         public Viewholder(ViewholderRecommendedBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }

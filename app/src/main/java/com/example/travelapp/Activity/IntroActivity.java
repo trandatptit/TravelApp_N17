@@ -18,6 +18,8 @@ public class IntroActivity extends BaseActivity {
         binding = ActivityIntroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.introBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(IntroActivity.this, MainActivity.class)));
+//        binding.introBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(IntroActivity.this, MainActivity.class)));
+        binding.introBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(IntroActivity.this, WelcomeActivity.class)));
     }
+
 }

@@ -1,17 +1,19 @@
 package com.example.travelapp.Activity;
 
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
-import com.example.travelapp.R;
 import com.example.travelapp.Adapter.CategoryAdapter;
 import com.example.travelapp.Adapter.PopularAdapter;
 import com.example.travelapp.Adapter.RecommentdedAdapter;
@@ -20,28 +22,73 @@ import com.example.travelapp.Domain.Category;
 import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.Domain.Location;
 import com.example.travelapp.Domain.SliderItems;
+import com.example.travelapp.R;
 import com.example.travelapp.databinding.ActivityMainBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
+import com.example.travelapp.databinding.ViewholderCategoryBinding;
 public class MainActivity extends BaseActivity {
-    ActivityMainBinding binding;
 
-    @Override
+    ActivityMainBinding binding;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initLocation();
+        mAuth = FirebaseAuth.getInstance();
+
+        // Cấu hình Google Sign-In (giống như trong LoginActivity)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)) // Lấy từ strings.xml
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // Xử lý sự kiện nút "Đăng xuất"
+        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
+
+        // Các hàm khởi tạo khác
         initBanner();
         initCategory();
         initRecommentded();
         initPopular();
+    }
+
+    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
+    private void showSignOutDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                .setPositiveButton("Đồng ý", (dialog, which) -> signOut()) // Xác nhận đăng xuất
+                .setNegativeButton("Hủy", null) // Hủy bỏ đăng xuất
+                .setCancelable(true)
+                .show();
+    }
+
+    // ========== ĐĂNG XUẤT ==========
+    private void signOut() {
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            FirebaseAuth.getInstance().signOut();  // Đăng xuất Firebase
+            Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+
+            // Chuyển hướng về màn hình đăng nhập
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish(); // Kết thúc màn hình hiện tại
+        });
     }
 
     private void initPopular() {
@@ -130,29 +177,30 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-    private void initLocation() {
-        DatabaseReference myRef = database.getReference("Location");
-        ArrayList<Location> list = new ArrayList<>();
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue:snapshot.getChildren()){
-                        list.add(issue.getValue(Location.class));
-                    }
-                    ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    binding.locationSp.setAdapter(adapter);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+//    private void initLocation() {
+//        DatabaseReference myRef = database.getReference("Location");
+//        ArrayList<Location> list = new ArrayList<>();
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    for(DataSnapshot issue:snapshot.getChildren()){
+//                        list.add(issue.getValue(Location.class));
+//                    }
+//                    ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
+//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    binding.locationSp.setAdapter(adapter);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
-            }
-        });
-
-    }
     private void banners(ArrayList<SliderItems> items){
         binding.viewPagerSlider.setAdapter(new SliderAdapter(items, binding.viewPagerSlider));
         binding.viewPagerSlider.setClipToPadding(false);
