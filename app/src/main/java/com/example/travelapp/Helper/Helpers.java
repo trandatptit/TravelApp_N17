@@ -2,7 +2,8 @@ package com.example.travelapp.Helper;
 
 import android.annotation.SuppressLint;
 
-import com.zlpdemo.merchantDemo.Helper.HMac.HMacUtil;
+
+import com.example.travelapp.Helper.HMac.HMacUtil;
 
 import org.jetbrains.annotations.NotNull;
 import java.security.InvalidKeyException;

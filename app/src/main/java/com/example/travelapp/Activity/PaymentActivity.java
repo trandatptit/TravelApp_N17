@@ -1,16 +1,30 @@
 package com.example.travelapp.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.travelapp.Api.CreateOrder;
 import com.example.travelapp.Domain.ItemDomain;
+import com.example.travelapp.Domain.Order;
+import com.example.travelapp.Domain.OrderDetail;
 import com.example.travelapp.databinding.ActivityPaymentBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import vn.zalopay.sdk.ZaloPayError; // Import class xử lý lỗi ZaloPay
+import vn.zalopay.sdk.ZaloPaySDK; // Import class chính của ZaloPay SDK
+import vn.zalopay.sdk.listeners.PayOrderListener; // Import interface lắng nghe kết quả thanh toán
+
 
 public class PaymentActivity extends BaseActivity {
     private ActivityPaymentBinding binding;
@@ -35,8 +49,16 @@ public class PaymentActivity extends BaseActivity {
 
         // Khởi tạo Firebase
         database = FirebaseDatabase.getInstance();
-        ordersRef = database.getReference("Orders"); // Tên node Orders (số nhiều)
+        ordersRef = database.getReference("Orders"); // Tham chiếu đến node "Orders" trong Firebase
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            // Thực hiện các hành động với userId
+        } else {
+            // Xử lý trường hợp chưa có người dùng đăng nhập
+            Toast.makeText(this, "Bạn cần đăng nhập để thực hiện thanh toán", Toast.LENGTH_SHORT).show();
+            // Có thể chuyển người dùng đến màn hình đăng nhập
+        }
 
         // Nhận object sản phẩm từ Intent
         getIntentExtra();
@@ -88,23 +110,23 @@ public class PaymentActivity extends BaseActivity {
     private void saveOrderToFirebase(String fullName, String phoneNumber, String productName, int quantity, double price, double totalAmount, String status) {
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            String orderId = ordersRef.push().getKey();
+            String orderId = ordersRef.push().getKey(); // Tạo ID duy nhất cho đơn hàng mới
             currentOrderId = orderId; // Lưu lại orderId
 
-            // Lấy thời gian hiện tại
+            // Lấy thời gian hiện tại theo định dạng ISO 8601
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
             String createdAt = sdf.format(Calendar.getInstance().getTime());
 
             // Tạo đối tượng Order
             Order order = new Order(createdAt, status, totalAmount, userId);
 
-            ordersRef.child(orderId).setValue(order)
+            ordersRef.child(orderId).setValue(order) // Lưu đơn hàng vào Firebase
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(PaymentActivity.this, "Đã tạo đơn hàng (chờ thanh toán)", Toast.LENGTH_SHORT).show();
-                        // Sau khi tạo đơn hàng, lưu chi tiết đơn hàng
+                        // Sau khi tạo đơn hàng thành công, lưu chi tiết đơn hàng
                         saveOrderDetail(orderId, price, quantity, object.getId(), totalAmount);
-                        // Gọi API ZaloPay
-                        callZaloPayAPI(String.valueOf(totalAmount));
+                        // Gọi API ZaloPay và tiến hành thanh toán
+                        callZaloPayAPIAndPay(String.valueOf(totalAmount));
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(PaymentActivity.this, "Lỗi khi tạo đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -115,36 +137,58 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void saveOrderDetail(String orderId, double price, int quantity, String ticketId, double totalPrice) {
-        orderDetailsRef = database.getReference("OrderDetails").child(orderId).child("0"); // Sử dụng "0" làm key con đầu tiên
+        orderDetailsRef = database.getReference("OrderDetails").child(orderId).child("0"); // Tham chiếu đến chi tiết đơn hàng (sử dụng "0" làm key con đầu tiên)
         OrderDetail orderDetail = new OrderDetail(price, quantity, ticketId, totalPrice);
-        orderDetailsRef.setValue(orderDetail)
+        orderDetailsRef.setValue(orderDetail) // Lưu chi tiết đơn hàng vào Firebase
                 .addOnFailureListener(e -> {
                     Toast.makeText(PaymentActivity.this, "Lỗi khi thêm chi tiết đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     // Có thể cần rollback việc tạo đơn hàng chính nếu thêm chi tiết thất bại
                 });
     }
 
-    private void callZaloPayAPI(String amount) {
+    private void callZaloPayAPIAndPay(String amount) {
         CreateOrder createOrder = new CreateOrder();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JSONObject response = createOrder.createOrder(amount);
+                    JSONObject response = createOrder.createOrder(amount); // Gọi API tạo đơn hàng ZaloPay
                     if (response != null && response.getInt("return_code") == 1) {
-                        String orderToken = response.getString("order_token");
-                        // TODO: Sử dụng orderToken để gọi ZaloPay SDK thanh toán
+                        String zpTransToken = response.getString("zp_trans_token"); // Lấy zp_trans_token từ response của ZaloPay
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(PaymentActivity.this, "Gọi API ZaloPay thành công, orderToken: " + orderToken, Toast.LENGTH_LONG).show();
-                                // Sau khi có orderToken và giả sử quá trình thanh toán ZaloPay thành công,
-                                // gọi phương thức để cập nhật trạng thái đơn hàng
-                                updateOrderStatusToPaid();
-                                // Chuyển sang TicketActivity và truyền object (nếu cần)
-                                Intent intent = new Intent(PaymentActivity.this, TicketActivity.class);
-                                intent.putExtra("object", object);
-                                startActivity(intent);
+                                // Gọi ZaloPay SDK để tiến hành thanh toán
+                                ZaloPaySDK.getInstance().payOrder(PaymentActivity.this, zpTransToken, "travelapp://callback", new PayOrderListener() {
+                                    @Override
+                                    public void onPaymentSucceeded(String transactionId, String transToken, String appTransID) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(PaymentActivity.this, "Thanh toán thành công: " + transactionId, Toast.LENGTH_SHORT).show();
+                                            updateOrderStatusToPaid("paid"); // Cập nhật trạng thái đơn hàng thành "đã thanh toán"
+                                            Intent intent = new Intent(PaymentActivity.this, TicketActivity.class);
+                                            intent.putExtra("object", object);
+                                            startActivity(intent);
+                                            finish(); // Kết thúc Activity hiện tại
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onPaymentCanceled(String zpTransToken, String appTransID) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(PaymentActivity.this, "Thanh toán bị hủy", Toast.LENGTH_SHORT).show();
+                                            updateOrderStatusToPaid("canceled"); // Cập nhật trạng thái đơn hàng thành "đã hủy"
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(PaymentActivity.this, "Lỗi thanh toán (" + zaloPayError.toString() + "): " + zpTransToken, Toast.LENGTH_LONG).show();
+                                            updateOrderStatusToPaid("failed"); // Cập nhật trạng thái đơn hàng thành "thất bại"
+                                        });
+                                    }
+                                });
                             }
                         });
                     } else {
@@ -169,31 +213,28 @@ public class PaymentActivity extends BaseActivity {
         }).start();
     }
 
-    private void updateOrderStatusToPaid() {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent); // Xử lý kết quả trả về từ ZaloPay SB
+    }
+
+    private void updateOrderStatusToPaid(String status) {
         if (currentOrderId != null) {
-            ordersRef.child(currentOrderId).child("status").setValue("paid")
+            ordersRef.child(currentOrderId).child("status").setValue(status) // Cập nhật trạng thái đơn hàng trong Firebase
                     .addOnSuccessListener(aVoid -> {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(PaymentActivity.this, "Đã cập nhật trạng thái đơn hàng: Đã thanh toán", Toast.LENGTH_SHORT).show();
-                            }
+                        runOnUiThread(() -> {
+                            Toast.makeText(PaymentActivity.this, "Đã cập nhật trạng thái đơn hàng: " + status, Toast.LENGTH_SHORT).show();
                         });
                     })
                     .addOnFailureListener(e -> {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(PaymentActivity.this, "Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                        runOnUiThread(() -> {
+                            Toast.makeText(PaymentActivity.this, "Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
                     });
         } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(PaymentActivity.this, "Không tìm thấy ID đơn hàng để cập nhật trạng thái", Toast.LENGTH_SHORT).show();
-                }
+            runOnUiThread(() -> {
+                Toast.makeText(PaymentActivity.this, "Không tìm thấy ID đơn hàng để cập nhật trạng thái", Toast.LENGTH_SHORT).show();
             });
         }
     }

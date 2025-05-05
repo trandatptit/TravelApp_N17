@@ -3,6 +3,8 @@ package com.example.travelapp.Domain;
 import java.io.Serializable;
 
 public class ItemDomain implements Serializable {
+
+    private String id;
     private String title;
     private String address;
     private String description;
@@ -19,6 +21,10 @@ public class ItemDomain implements Serializable {
     private String dateTour;
 
     public ItemDomain() {
+    }
+
+    public String getId(){
+        return id;
     }
 
     public String getTitle() {
