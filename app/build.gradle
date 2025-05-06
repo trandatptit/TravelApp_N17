@@ -31,6 +31,13 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    // nam them
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['library']
+        }
+    }
 }
 
 dependencies {
@@ -56,7 +63,7 @@ dependencies {
     implementation libs.firebase.database
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
-    implementation fileTree(dir: 'D:\\android\\TravelApp_N17\\app\\src\\main\\library', include: ['*.aar', '*.jar'], exclude: [])
+    implementation files('library/zpdk-release-v3.1.aar')
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
