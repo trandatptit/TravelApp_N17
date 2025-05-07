@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.travelapp.Api.CreateOrder;
 import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.Domain.Order;
@@ -62,6 +63,7 @@ public class PaymentActivity extends BaseActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
+            String fullName = currentUser.getDisplayName();
             // Thực hiện các hành động với userId
         } else {
             // Xử lý trường hợp chưa có người dùng đăng nhập
@@ -74,6 +76,8 @@ public class PaymentActivity extends BaseActivity {
 
         // Hiển thị thông tin sản phẩm
         displayProductInfo();
+
+        displayUserInfo();
 
         // Xử lý sự kiện nút Thanh toán
         binding.btnPay.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +102,18 @@ public class PaymentActivity extends BaseActivity {
         });
     }
 
+    private void displayUserInfo(
+    ) {
+        if (currentUser != null) {
+            String fullName = currentUser.getDisplayName();
+
+            binding.etFullName.setText(fullName);
+        } else {
+            binding.etFullName.setText("");
+        }
+    }
+
+
     private void getIntentExtra() {
         if (getIntent().hasExtra("object")) {
             object = (ItemDomain) getIntent().getSerializableExtra("object");
@@ -109,7 +125,10 @@ public class PaymentActivity extends BaseActivity {
 
     private void displayProductInfo() {
         if (object != null) {
-            binding.tvProductName.setText("Tên sản phẩm: " + object.getTitle());
+            Glide.with(PaymentActivity.this)
+                    .load(object.getPic())
+                    .into(binding.pic);
+            binding.tvProductName.setText("Tour: " + object.getTitle());
             binding.tvProductQuantity.setText("Số lượng: " + productQuantity);
             binding.tvProductPrice.setText("Đơn giá: " + String.valueOf(object.getPrice()) + " VND");
             binding.tvTotalAmountDetail.setText("Tổng tiền: " + String.format("%.0f", totalAmount) + " VND");

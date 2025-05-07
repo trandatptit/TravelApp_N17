@@ -13,15 +13,15 @@ import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.R;
 import com.example.travelapp.databinding.ViewholderRecommendedBinding;
 import com.example.travelapp.databinding.ViewholderRecommendedCompactBinding;
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapter.Viewholder> {
     ArrayList<ItemDomain> items;
     Context context;
-<<<<<<< HEAD
-=======
     boolean isCompactLayout; // Biến xác định layout
->>>>>>> seeAll
 
     public RecommentdedAdapter(ArrayList<ItemDomain> items, boolean isCompactLayout) {
         this.items = items;
@@ -32,10 +32,6 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
     @Override
     public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-<<<<<<< HEAD
-        ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.inflate(LayoutInflater.from(context), parent, false);
-        return new Viewholder(binding);
-=======
         LayoutInflater inflater = LayoutInflater.from(context);
         if (isCompactLayout) {
             ViewholderRecommendedCompactBinding binding = ViewholderRecommendedCompactBinding.inflate(inflater, parent, false);
@@ -44,41 +40,37 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
             ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.inflate(inflater, parent, false);
             return new Viewholder(binding.getRoot());
         }
->>>>>>> seeAll
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
         ItemDomain item = items.get(position);
-<<<<<<< HEAD
-
-        holder.binding.titleTxt.setText(item.getTitle());
-        holder.binding.priceTxt.setText(" $" + item.getPrice());
-        holder.binding.addressTxt.setText(item.getAddress());
-        holder.binding.scoreTxt.setText("" + item.getScore());
-
-        Glide.with(context)
-                .load(item.getPic())
-                .into(holder.binding.pic);
-
-=======
         if (isCompactLayout) {
             ViewholderRecommendedCompactBinding binding = ViewholderRecommendedCompactBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            binding.priceTxt.setText("$" + item.getPrice());
+
+            // Định dạng số theo định dạng tiền tệ Việt Nam
+            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+            String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
+            binding.priceTxt.setText(formattedPrice);
+
             binding.addressTxt.setText(item.getAddress());
             binding.scoreTxt.setText(String.valueOf(item.getScore()));
             Glide.with(context).load(item.getPic()).into(binding.pic);
         } else {
             ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            binding.priceTxt.setText("$" + item.getPrice());
+            // Định dạng số theo định dạng tiền tệ Việt Nam
+            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+            String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
+            binding.priceTxt.setText(formattedPrice);
             binding.addressTxt.setText(item.getAddress());
             binding.scoreTxt.setText(String.valueOf(item.getScore()));
             Glide.with(context).load(item.getPic()).into(binding.pic);
         }
 
->>>>>>> seeAll
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("object", item);
@@ -92,16 +84,10 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-<<<<<<< HEAD
-        ViewholderRecommendedBinding binding;
 
-        public Viewholder(ViewholderRecommendedBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-=======
         public Viewholder(View itemView) {
             super(itemView);
->>>>>>> seeAll
+
         }
     }
 }

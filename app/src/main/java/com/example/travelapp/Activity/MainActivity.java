@@ -164,9 +164,16 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         ItemDomain item = issue.getValue(ItemDomain.class);
                         // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
-                        if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
-                            list.add(item);
+
+                        if (item != null) {
+                            item.setId(issue.getKey()); // ✅ GÁN ID ở đây
+
+                            // Lọc theo category nếu có
+                            if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
+                                list.add(item);
+                            }
                         }
+
                     }
                     if (!list.isEmpty()) {
                         binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
@@ -196,9 +203,16 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         ItemDomain item = issue.getValue(ItemDomain.class);
                         // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
-                        if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
-                            list.add(item);
+
+                        if (item != null) {
+                            item.setId(issue.getKey()); // ✅ GÁN ID ở đây
+
+                            // Lọc theo category nếu có
+                            if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
+                                list.add(item);
+                            }
                         }
+
                     }
                     if (!list.isEmpty()) {
                         binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));

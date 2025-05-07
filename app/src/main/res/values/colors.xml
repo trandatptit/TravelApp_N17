@@ -7,4 +7,5 @@
     <color name="lightGray">#efefef</color>
     <color name="navyBLue">#1F41BB</color>
     <color name="aliceBlue">#F1F4FF</color>
+    <color name="imageBackground">#F0F0F0</color>
 </resources>

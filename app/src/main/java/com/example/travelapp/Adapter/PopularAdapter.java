@@ -12,7 +12,10 @@ import com.example.travelapp.Activity.DetailActivity;
 import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.databinding.ViewholderPopularCompactBinding;
 import com.example.travelapp.databinding.ViewholderRecommendedBinding;
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewholder> {
     ArrayList<ItemDomain> items;
@@ -44,14 +47,20 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
         if (isCompactLayout) {
             ViewholderPopularCompactBinding binding = ViewholderPopularCompactBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            binding.priceTxt.setText("$" + item.getPrice());
+            // Định dạng số theo định dạng tiền tệ Việt Nam
+            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+            String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
+            binding.priceTxt.setText(formattedPrice);
             binding.addressTxt.setText(item.getAddress());
             binding.scoreTxt.setText(String.valueOf(item.getScore()));
             Glide.with(context).load(item.getPic()).into(binding.pic);
         } else {
             ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            binding.priceTxt.setText("$" + item.getPrice());
+            // Định dạng số theo định dạng tiền tệ Việt Nam
+            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+            String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
+            binding.priceTxt.setText(formattedPrice);
             binding.addressTxt.setText(item.getAddress());
             binding.scoreTxt.setText(String.valueOf(item.getScore()));
             Glide.with(context).load(item.getPic()).into(binding.pic);

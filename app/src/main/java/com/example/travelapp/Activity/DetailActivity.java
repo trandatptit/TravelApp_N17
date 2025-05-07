@@ -16,6 +16,9 @@ import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.R;
 import com.example.travelapp.databinding.ActivityDetailBinding;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private ItemDomain object;
@@ -37,7 +40,10 @@ public class DetailActivity extends BaseActivity {
 
     private void setVariable() {
         binding.titleTxt.setText(object.getTitle());
-        binding.priceTxt.setText(" $" + object.getPrice());
+        // Định dạng số theo định dạng tiền tệ Việt Nam
+        NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+        String formattedPrice = currencyFormatter.format(object.getPrice()) + " VND";
+        binding.priceTxt.setText(formattedPrice);
         binding.backBtn.setOnClickListener(v -> finish());
         binding.bedTxt.setText("" + object.getBed());
         binding.durationTxt.setText(object.getDuration());
