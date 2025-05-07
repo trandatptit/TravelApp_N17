@@ -2,6 +2,7 @@ package com.example.travelapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -51,12 +52,12 @@ public class DetailActivity extends BaseActivity {
                 .into(binding.pic);
 
         binding.addToCartBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
+            Log.d("DEBUG", "object: " + object); // Kiểm tra object có null không
+            // Chuyển sang PaymentActivity và truyền dữ liệu sản phẩm (nam thêm)
+            Intent intent = new Intent(DetailActivity.this, PaymentActivity.class);
             intent.putExtra("object", object);
             startActivity(intent);
         });
-
-
     }
 
     private void getIntentExtra() {
