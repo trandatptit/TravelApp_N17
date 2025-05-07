@@ -9,11 +9,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
+import com.example.travelapp.Fragment.BookmarkFragment;
+import com.example.travelapp.Fragment.HistoryFragment;
+import com.example.travelapp.Fragment.ProfileFragment;
 import com.example.travelapp.R;
 
 import com.example.travelapp.Adapter.CategoryAdapter;
@@ -36,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import com.example.travelapp.databinding.ViewholderCategoryBinding;
+
 public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
@@ -44,11 +49,47 @@ public class MainActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
+    // Phương thức công khai để điều hướng đến tab cụ thể dựa trên tabId.
+    public void navigateToTab(int tabId) {
+        binding.chipNavigation.setItemSelected(tabId, true);
+
+        Fragment fragment = null;
+
+        if (tabId == R.id.home) {
+            // Hiển thị recyclerView và ẩn fragmentContainer
+            binding.recyclerViewCategory.setVisibility(View.VISIBLE);
+            binding.fragmentContainer.setVisibility(View.GONE);
+            return;
+        } else if (tabId == R.id.history) {
+            // Điều hướng tới HistoryFragment
+            fragment = new HistoryFragment();
+        } else if (tabId == R.id.bookmark) {
+            // Điều hướng tới BookmarkFragment
+            fragment = new BookmarkFragment();  // Đảm bảo rằng bạn đã tạo lớp BookmarkFragment
+        } else if (tabId == R.id.profile) {
+            // Điều hướng tới ProfileFragment
+            fragment = new ProfileFragment();  // Đảm bảo rằng bạn đã tạo lớp ProfileFragment
+        }
+
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment)
+                    .commit();
+            binding.recyclerViewCategory.setVisibility(View.GONE);
+            binding.fragmentContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //Xử lý phần chuyển cu chipNavigation
+        binding.chipNavigation.setOnItemSelectedListener(this::navigateToTab);
 
         // Nút see all cho phần recommend
         binding.textView6.setOnClickListener(v -> {
