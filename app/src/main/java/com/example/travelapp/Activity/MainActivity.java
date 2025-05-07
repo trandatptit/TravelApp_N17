@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
+
+import com.example.travelapp.R;
 
 import com.example.travelapp.Adapter.CategoryAdapter;
 import com.example.travelapp.Adapter.PopularAdapter;
@@ -31,12 +34,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import com.example.travelapp.databinding.ViewholderCategoryBinding;
 public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
+    private int selectedCategoryId = -1; // Lưu categoryId được chọn
+
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -44,15 +48,19 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding. getRoot());
-        // nút see all cho phan recommend
+        setContentView(binding.getRoot());
+
+        // Nút see all cho phần recommend
         binding.textView6.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RecommendedSeeAllActivity.class);
+            intent.putExtra("categoryId", selectedCategoryId); // Truyền categoryId
             startActivity(intent);
         });
-        // nút see all cho phan popular
+
+        // Nút see all cho phần popular
         binding.textView8.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PopularSeeAllActivity.class);
+            intent.putExtra("categoryId", selectedCategoryId); // Truyền categoryId
             startActivity(intent);
         });
 
@@ -76,6 +84,7 @@ public class MainActivity extends BaseActivity {
         initPopular();
         initRecommentded();
     }
+
 
 //    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
 //    private void showSignOutDialog() {
@@ -101,57 +110,6 @@ public class MainActivity extends BaseActivity {
 //        });
 //    }
 
-    private void initPopular() {
-        DatabaseReference myRef = database.getReference("Popular");
-        binding.progressBarPopular.setVisibility(View.VISIBLE);
-        ArrayList<ItemDomain> list = new ArrayList<>();
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot issue : snapshot.getChildren()) {
-                        list.add(issue.getValue(ItemDomain.class));
-                    }
-                    if (!list.isEmpty()) {
-                        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new PopularAdapter(list, true); // Sử dụng viewholder_popular_compact.xml
-                        binding.recyclerViewPopular.setAdapter(adapter);
-                    }
-                    binding.progressBarPopular.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void initRecommentded() {
-        DatabaseReference myRef = database.getReference("Item");
-        binding.progressBarRecommended.setVisibility(View.VISIBLE);
-        ArrayList<ItemDomain> list = new ArrayList<>();
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot issue : snapshot.getChildren()) {
-                        list.add(issue.getValue(ItemDomain.class));
-                    }
-                    if (!list.isEmpty()) {
-                        binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new RecommentdedAdapter(list, true); // Sử dụng compact layout
-                        binding.recyclerViewRecommended.setAdapter(adapter);
-                    }
-                    binding.progressBarRecommended.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
     private void initCategory() {
         DatabaseReference myRef = database.getReference("Category");
         binding.progressBarCategory.setVisibility(View.VISIBLE);
@@ -166,16 +124,95 @@ public class MainActivity extends BaseActivity {
                     }
                     if (!list.isEmpty()) {
                         binding.recyclerViewCategory.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new CategoryAdapter(list);
-                        binding.recyclerViewCategory.setAdapter(adapter);
+                        CategoryAdapter adapter = new CategoryAdapter(list, new CategoryAdapter.OnCategorySelectedListener() {
+                            @Override
+                            public void onCategorySelected(int categoryId) {
+                                selectedCategoryId = categoryId;
+                                initRecommentded(); // Tải lại danh sách Recommended
+                                initPopular(); // Tải lại danh sách Popular
+                            }
+
+                            @Override
+                            public void onCategoryDeselected() {
+                                selectedCategoryId = -1;
+                                initRecommentded(); // Tải lại tất cả Recommended
+                                initPopular(); // Tải lại tất cả Popular
+                            }
+                        });
+                        binding.recyclerViewCategory
+
+                                .setAdapter(adapter);
                     }
                     binding.progressBarCategory.setVisibility(View.GONE);
                 }
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void initRecommentded() {
+        DatabaseReference myRef = database.getReference("Item");
+        binding.progressBarRecommended.setVisibility(View.VISIBLE);
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
+                        if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
+                            list.add(item);
+                        }
+                    }
+                    if (!list.isEmpty()) {
+                        binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new RecommentdedAdapter(list, true);
+                        binding.recyclerViewRecommended.setAdapter(adapter);
+                    } else {
+                        binding.recyclerViewRecommended.setAdapter(null); // Xóa danh sách nếu không có item
+                    }
+                    binding.progressBarRecommended.setVisibility(View.GONE);
+                }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void initPopular() {
+        DatabaseReference myRef = database.getReference("Popular");
+        binding.progressBarPopular.setVisibility(View.VISIBLE);
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
+                        if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
+                            list.add(item);
+                        }
+                    }
+                    if (!list.isEmpty()) {
+                        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new PopularAdapter(list, true);
+                        binding.recyclerViewPopular.setAdapter(adapter);
+                    } else {
+                        binding.recyclerViewPopular.setAdapter(null); // Xóa danh sách nếu không có item
+                    }
+                    binding.progressBarPopular.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
@@ -185,8 +222,8 @@ public class MainActivity extends BaseActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue:snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
                         list.add(issue.getValue(Location.class));
                     }
                     ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
@@ -196,13 +233,13 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
-    private void banners(ArrayList<SliderItems> items){
+
+    private void banners(ArrayList<SliderItems> items) {
+
         binding.viewPagerSlider.setAdapter(new SliderAdapter(items, binding.viewPagerSlider));
         binding.viewPagerSlider.setClipToPadding(false);
         binding.viewPagerSlider.setClipChildren(false);
@@ -213,15 +250,16 @@ public class MainActivity extends BaseActivity {
         compositePageTransformer.addTransformer(new MarginPageTransformer(40));
         binding.viewPagerSlider.setPageTransformer(compositePageTransformer);
     }
-    private void initBanner(){
+
+    private void initBanner() {
         DatabaseReference myRef = database.getReference("Banner");
         binding.progressBarBaner.setVisibility(View.VISIBLE);
         ArrayList<SliderItems> items = new ArrayList<>();
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue:snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
                         items.add(issue.getValue(SliderItems.class));
                     }
                     banners(items);
@@ -230,9 +268,7 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 }

@@ -10,12 +10,16 @@ import java.util.ArrayList;
 
 public class PopularSeeAllActivity extends BaseActivity {
     ActivityPopularSeeAllBinding binding;
+    private int selectedCategoryId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPopularSeeAllBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Nhận categoryId từ Intent
+        selectedCategoryId = getIntent().getIntExtra("categoryId", -1);
 
         loadPopularItems();
         binding.backBtn.setOnClickListener(v -> finish());
@@ -29,9 +33,13 @@ public class PopularSeeAllActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    list.add(data.getValue(ItemDomain.class));
+                    ItemDomain item = data.getValue(ItemDomain.class);
+                    // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
+                    if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
+                        list.add(item);
+                    }
                 }
-                PopularAdapter adapter = new PopularAdapter(list, false); // Sử dụng viewholder_recommended.xml
+                PopularAdapter adapter = new PopularAdapter(list, false);
                 binding.recyclerView.setAdapter(adapter);
             }
 

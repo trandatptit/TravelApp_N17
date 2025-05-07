@@ -17,6 +17,7 @@ public class ItemDomain implements Serializable {
     private String distance;
     private double score;
     private String dateTour;
+    private int categoryId; // Thêm thuộc tính categoryId
 
     public ItemDomain() {
     }
@@ -131,5 +132,13 @@ public class ItemDomain implements Serializable {
 
     public void setDateTour(String dateTour) {
         this.dateTour = dateTour;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }
