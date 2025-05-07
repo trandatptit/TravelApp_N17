@@ -1,6 +1,5 @@
 package com.example.travelapp.Activity;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -45,7 +44,17 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(binding. getRoot());
+        // nút see all cho phan recommend
+        binding.textView6.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RecommendedSeeAllActivity.class);
+            startActivity(intent);
+        });
+        // nút see all cho phan popular
+        binding.textView8.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, PopularSeeAllActivity.class);
+            startActivity(intent);
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -64,8 +73,8 @@ public class MainActivity extends BaseActivity {
         initLocation();
         initBanner();
         initCategory();
-        initRecommentded();
         initPopular();
+        initRecommentded();
     }
 
 //    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
@@ -95,19 +104,18 @@ public class MainActivity extends BaseActivity {
     private void initPopular() {
         DatabaseReference myRef = database.getReference("Popular");
         binding.progressBarPopular.setVisibility(View.VISIBLE);
-
         ArrayList<ItemDomain> list = new ArrayList<>();
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue:snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
                         list.add(issue.getValue(ItemDomain.class));
                     }
-                    if(!list.isEmpty()){
+                    if (!list.isEmpty()) {
                         binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new PopularAdapter(list);
+                        RecyclerView.Adapter adapter = new PopularAdapter(list, true); // Sử dụng viewholder_popular_compact.xml
                         binding.recyclerViewPopular.setAdapter(adapter);
                     }
                     binding.progressBarPopular.setVisibility(View.GONE);
@@ -115,29 +123,24 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
     }
 
     private void initRecommentded() {
         DatabaseReference myRef = database.getReference("Item");
         binding.progressBarRecommended.setVisibility(View.VISIBLE);
-
         ArrayList<ItemDomain> list = new ArrayList<>();
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue:snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
                         list.add(issue.getValue(ItemDomain.class));
                     }
-                    if(!list.isEmpty()){
+                    if (!list.isEmpty()) {
                         binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new RecommentdedAdapter(list);
+                        RecyclerView.Adapter adapter = new RecommentdedAdapter(list, true); // Sử dụng compact layout
                         binding.recyclerViewRecommended.setAdapter(adapter);
                     }
                     binding.progressBarRecommended.setVisibility(View.GONE);
@@ -145,11 +148,8 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
     }
 
     private void initCategory() {
