@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,36 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".Activity.DetailActivity">
 
-    <ScrollView
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="75dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="50dp"
             android:orientation="vertical">
 
+            <!-- Top Section with Image and Main Content -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
+                <!-- Image Container -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout2"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="0dp"
+                    android:minHeight="300dp"
+                    app:layout_constraintDimensionRatio="H,16:9"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/pic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         android:scaleType="centerCrop"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
@@ -62,24 +68,26 @@
                         app:srcCompat="@drawable/fav_icon" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <!-- Detail Content -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="350dp"
+                    android:layout_marginTop="280dp"
                     android:background="@drawable/top_corner_bg"
-
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:paddingBottom="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
+                        <!-- Title -->
                         <TextView
                             android:id="@+id/titleTxt"
                             android:layout_width="match_parent"
@@ -89,42 +97,42 @@
                             android:textAlignment="center"
                             android:textColor="@color/darkBlue"
                             android:textSize="24sp"
-                            android:textStyle="bold"
+                            android:textStyle="bold" />
 
-                            />
-
+                        <!-- Address -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <ImageView
                                 android:id="@+id/imageView9"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
+                                android:layout_gravity="center_vertical"
                                 app:srcCompat="@drawable/location" />
 
                             <TextView
                                 android:id="@+id/addressTxt"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_weight="1"
                                 android:text="address"
                                 android:textColor="@color/darkBlue"
-                                android:textSize="16sp"
-
-                                />
+                                android:textSize="16sp" />
                         </LinearLayout>
 
+                        <!-- Rating -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="8dp"
-
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <RatingBar
@@ -151,31 +159,33 @@
                                 android:textSize="16sp" />
                         </LinearLayout>
 
+                        <!-- Stats Box -->
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="80dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="24dp"
                             android:background="@drawable/grey_bg_corner"
+                            android:minHeight="80dp"
+                            android:orientation="horizontal"
+                            android:padding="8dp">
 
-                            android:orientation="horizontal">
-
+                            <!-- Duration -->
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="0.333">
 
                                 <TextView
                                     android:id="@+id/durationTxt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="16dp"
+                                    android:layout_marginTop="8dp"
                                     android:text="- min"
                                     android:textColor="@color/darkBlue"
-
                                     android:textStyle="bold"
                                     app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.68"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -190,42 +200,42 @@
                                     app:srcCompat="@drawable/hourglass" />
 
                                 <TextView
-
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="8dp"
-                                    android:text="Duration"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="Thời gian"
                                     android:textColor="@color/darkBlue"
-
+                                    app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView101" />
+                                    app:layout_constraintTop_toBottomOf="@+id/durationTxt" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
+                            <!-- Divider -->
                             <View
                                 android:id="@+id/view2"
                                 android:layout_width="1dp"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="8dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="4dp"
                                 android:background="@color/blue" />
 
+                            <!-- Distance -->
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="0.333">
 
                                 <TextView
                                     android:id="@+id/distanceTxt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="16dp"
+                                    android:layout_marginTop="8dp"
                                     android:text="0"
                                     android:textColor="@color/darkBlue"
-
                                     android:textStyle="bold"
                                     app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.68"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -242,36 +252,38 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="8dp"
-                                    android:text="Distance"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="Khoảng cách"
                                     android:textColor="@color/darkBlue"
-
+                                    app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView102" />
+                                    app:layout_constraintTop_toBottomOf="@+id/distanceTxt" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
+                            <!-- Divider -->
                             <View
                                 android:id="@+id/view3"
                                 android:layout_width="1dp"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="8dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="4dp"
                                 android:background="@color/blue" />
 
+                            <!-- Bed -->
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="0.333">
 
                                 <TextView
                                     android:id="@+id/bedTxt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="16dp"
+                                    android:layout_marginTop="8dp"
                                     android:text="0"
                                     android:textColor="@color/darkBlue"
-
                                     android:textStyle="bold"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -281,6 +293,7 @@
                                     android:id="@+id/imageView10"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginEnd="4dp"
                                     app:layout_constraintBottom_toBottomOf="@+id/bedTxt"
                                     app:layout_constraintEnd_toStartOf="@+id/bedTxt"
                                     app:layout_constraintTop_toTopOf="@+id/bedTxt"
@@ -288,31 +301,32 @@
 
                                 <TextView
                                     android:id="@+id/textView15"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="8dp"
-                                    android:text="Bed"
+                                    android:layout_width="22dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="Giường"
                                     android:textColor="@color/darkBlue"
-
+                                    app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+                                    app:layout_constraintTop_toBottomOf="@+id/bedTxt" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
 
+                        <!-- Description Section -->
                         <TextView
                             android:id="@+id/textView16"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
                             android:text="Mô tả"
                             android:textColor="@color/darkBlue"
                             android:textSize="20sp"
-                            android:textStyle="bold"
-
-                            />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/descriptionTxt"
@@ -321,10 +335,7 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="24dp"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim veniam, quis nostrud exercitation
-ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                             android:textColor="@color/darkBlue"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -332,28 +343,30 @@ ullamco laboris nisi ut aliquip ex ea commodo consequat."
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Payment Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
+        android:layout_gravity="bottom"
         android:background="@color/lightGray"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:elevation="16dp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addToCartBtn"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:text="Thanh toán"
             style="@android:style/Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/blue_bg"
+            android:text="Thanh toán"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:background="@drawable/blue_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/priceTxt"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -361,7 +374,7 @@ ullamco laboris nisi ut aliquip ex ea commodo consequat."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:text="000VND"
+            android:text="0VND"
             android:textColor="@color/blue"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -374,9 +387,8 @@ ullamco laboris nisi ut aliquip ex ea commodo consequat."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/darkBlue"
-
             app:layout_constraintBottom_toBottomOf="@+id/priceTxt"
             app:layout_constraintStart_toEndOf="@+id/priceTxt"
             app:layout_constraintTop_toTopOf="@+id/priceTxt" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

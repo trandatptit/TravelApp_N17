@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Activity.MainActivity">
 
-
-    <ScrollView
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="70dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
+            <!-- Header with Location and Notification -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_height="match_parent">
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="24dp">
 
                 <ImageView
                     android:id="@+id/imageView2"
@@ -53,28 +57,29 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Search Bar -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/grey_bg"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_height="match_parent">
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/grey_bg">
 
                 <EditText
                     android:id="@+id/editTextText"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:padding="8dp"
+                    android:background="#00ffffff"
                     android:drawableStart="@drawable/search_icon"
                     android:drawablePadding="8dp"
-                    android:textColorHint="@color/darkBlue"
                     android:ems="10"
-                    android:inputType="text"
                     android:hint="Street, Address, City..."
-                    android:textSize="16sp"
+                    android:inputType="text"
+                    android:padding="8dp"
                     android:textColor="@color/darkBlue"
-                    android:background="#00ffffff"
+                    android:textColorHint="@color/darkBlue"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView4"
                     app:layout_constraintStart_toStartOf="parent"
@@ -84,22 +89,21 @@
                     android:id="@+id/textView4"
                     android:layout_width="85dp"
                     android:layout_height="42dp"
-                    android:text="Search"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:background="@drawable/blue_bg"
-                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="2dp"
+                    android:background="@drawable/blue_bg"
+                    android:gravity="center"
+                    android:text="Tìm kiếm"
+                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Slider ViewPager -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPagerSlider"
@@ -107,8 +111,8 @@
                     android:layout_height="160dp"
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ProgressBar
@@ -116,85 +120,84 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/viewPagerSlider"
                     app:layout_constraintEnd_toEndOf="@+id/viewPagerSlider"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="@+id/viewPagerSlider"
+                    app:layout_constraintTop_toTopOf="@+id/viewPagerSlider" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Categories -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewCategory"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
-
-                </androidx.recyclerview.widget.RecyclerView>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ProgressBar
                     android:id="@+id/progressBarCategory"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewCategory"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/recyclerViewCategory" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Recommended Section Header -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Recommended"
+                    android:text="Đề xuất"
                     android:textColor="@color/darkBlue"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:text="Xem tất cả"
                     android:textColor="@color/blue"
-                    android:text="see all" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
+            <!-- Recommended Items -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewRecommended"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -204,52 +207,54 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewRecommended"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/recyclerViewRecommended" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Popular Destination Section Header -->
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_height="match_parent"
+                android:layout_marginEnd="24dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Popular Destination"
-                    android:textSize="16sp"
+                    android:text="Địa điểm được yêu thích"
                     android:textColor="@color/darkBlue"
-                    android:textStyle="bold"
-                    />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/blue"
-                    android:text="see all"
-                    />
+                    android:text="Xem tất cả"
+                    android:textColor="@color/blue" />
             </LinearLayout>
 
+            <!-- Popular Destination Items -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewPopular"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -259,27 +264,28 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewPopular"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/recyclerViewPopular" />
+                    app:layout_constraintTop_toTopOf="@+id/recyclerViewPopular" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Navigation Bar -->
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        app:cnb_menuResource="@menu/menu_bottom"
+        android:layout_gravity="bottom"
         android:background="@color/white"
-        android:elevation="3dp"
+        android:elevation="16dp"
         android:padding="4dp"
-        app:cnb_iconSize="20dp"
         app:cnb_iconColor="@color/white"
-        app:cnb_radius="50dp"
+        app:cnb_iconSize="20dp"
+        app:cnb_menuResource="@menu/menu_bottom"
         app:cnb_orientationMode="horizontal"
-        app:cnb_unselectedColor="@color/darkBlue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:cnb_radius="50dp"
+        app:cnb_unselectedColor="@color/darkBlue" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
