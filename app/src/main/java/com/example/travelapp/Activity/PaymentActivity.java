@@ -3,6 +3,7 @@ package com.example.travelapp.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -118,6 +119,7 @@ public class PaymentActivity extends BaseActivity {
         if (getIntent().hasExtra("object")) {
             object = (ItemDomain) getIntent().getSerializableExtra("object");
             if (object != null) {
+                Log.d("PaymentActivity", "Item ID: " + object.getId() + ", Title: " + object.getTitle());
                 totalAmount = productQuantity * object.getPrice();
             }
         }
@@ -162,6 +164,7 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void saveOrderDetail(String orderId, double price, int quantity, String ticketId, double totalPrice) {
+        Log.d("PaymentActivity", "ticketId to save: " + ticketId);
         orderDetailsRef = database.getReference("OrderDetails").child(orderId).child("0"); // Tham chiếu đến chi tiết đơn hàng (sử dụng "0" làm key con đầu tiên)
         OrderDetail orderDetail = new OrderDetail(price, quantity, ticketId, totalPrice);
         orderDetailsRef.setValue(orderDetail) // Lưu chi tiết đơn hàng vào Firebase
