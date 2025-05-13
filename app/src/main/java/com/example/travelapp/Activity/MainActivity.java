@@ -2,6 +2,8 @@ package com.example.travelapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -19,6 +21,7 @@ import com.example.travelapp.R;
 import com.example.travelapp.Adapter.CategoryAdapter;
 import com.example.travelapp.Adapter.PopularAdapter;
 import com.example.travelapp.Adapter.RecommentdedAdapter;
+import com.example.travelapp.Adapter.SearchResultsAdapter;
 import com.example.travelapp.Adapter.SliderAdapter;
 import com.example.travelapp.Domain.Category;
 import com.example.travelapp.Domain.ItemDomain;
@@ -43,7 +46,8 @@ public class MainActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-
+    private SearchResultsAdapter searchResultsAdapter;
+    private ArrayList<ItemDomain> allItems = new ArrayList<>(); // Danh sách tất cả các item để tìm kiếm
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +81,15 @@ public class MainActivity extends BaseActivity {
 //        // Xử lý sự kiện nút "Đăng xuất"
 //        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
 
+        // Khởi tạo RecyclerView cho kết quả tìm kiếm
+        setupSearchResults();
+        
+        // Khởi tạo tìm kiếm
+        setupSearch();
+        
+        // Nạp dữ liệu cho tìm kiếm
+        loadAllItems();
+        
         // Các hàm khởi tạo khác
         initLocation();
         initBanner();
@@ -85,6 +98,138 @@ public class MainActivity extends BaseActivity {
         initRecommentded();
     }
 
+    private void setupSearchResults() {
+        searchResultsAdapter = new SearchResultsAdapter(new ArrayList<>());
+        binding.recyclerViewSearchResults.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewSearchResults.setAdapter(searchResultsAdapter);
+    }
+
+    private void setupSearch() {
+        // Đặt sự kiện click cho nút tìm kiếm
+        binding.textView4.setOnClickListener(v -> {
+            String query = binding.editTextText.getText().toString().trim();
+            if (!query.isEmpty()) {
+                performSearch(query);
+            }
+        });
+
+        // Theo dõi thay đổi văn bản để tìm kiếm tự động
+        binding.editTextText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (query.isEmpty()) {
+                    // Ẩn kết quả tìm kiếm nếu trống
+                    binding.searchResultsLayout.setVisibility(View.GONE);
+                } else {
+                    // Thực hiện tìm kiếm khi người dùng nhập
+                    performSearch(query);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void loadAllItems() {
+        // Lấy tất cả các mục từ cơ sở dữ liệu để tìm kiếm
+        DatabaseReference itemsRef = database.getReference("Item");
+        
+        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allItems.clear();
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        if (item != null) {
+                            item.setId(issue.getKey());
+                            allItems.add(item);
+                        }
+                    }
+                }
+                
+                // Thêm các mục từ danh sách Popular
+                loadPopularItems();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+    
+    private void loadPopularItems() {
+        DatabaseReference popularRef = database.getReference("Popular");
+        
+        popularRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        if (item != null) {
+                            item.setId(issue.getKey());
+                            
+                            // Kiểm tra xem item đã tồn tại chưa (tránh trùng lặp)
+                            boolean exists = false;
+                            for (ItemDomain existingItem : allItems) {
+                                if (existingItem.getId().equals(item.getId())) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!exists) {
+                                allItems.add(item);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void performSearch(String query) {
+        // Hiển thị khu vực kết quả tìm kiếm
+        binding.searchResultsLayout.setVisibility(View.VISIBLE);
+        binding.progressBarSearch.setVisibility(View.VISIBLE);
+        
+        // Chuyển chuỗi tìm kiếm sang chữ thường
+        String lowercaseQuery = query.toLowerCase();
+        
+        // Lọc kết quả
+        ArrayList<ItemDomain> searchResults = new ArrayList<>();
+        
+        for (ItemDomain item : allItems) {
+            // Tìm kiếm theo title, address hoặc description
+            boolean matchesTitle = item.getTitle() != null && item.getTitle().toLowerCase().contains(lowercaseQuery);
+            boolean matchesAddress = item.getAddress() != null && item.getAddress().toLowerCase().contains(lowercaseQuery);
+            boolean matchesDescription = item.getDescription() != null && item.getDescription().toLowerCase().contains(lowercaseQuery);
+            
+            if (matchesTitle || matchesAddress || matchesDescription) {
+                searchResults.add(item);
+            }
+        }
+        
+        // Cập nhật UI dựa trên kết quả
+        if (searchResults.isEmpty()) {
+            binding.noResultsText.setVisibility(View.VISIBLE);
+            binding.recyclerViewSearchResults.setVisibility(View.GONE);
+        } else {
+            binding.noResultsText.setVisibility(View.GONE);
+            binding.recyclerViewSearchResults.setVisibility(View.VISIBLE);
+            searchResultsAdapter.updateList(searchResults);
+        }
+        
+        binding.progressBarSearch.setVisibility(View.GONE);
+    }
 
 //    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
 //    private void showSignOutDialog() {
