@@ -100,6 +100,61 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Search Results Section -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/searchResultsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/searchResultsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kết quả tìm kiếm"
+                    android:textColor="@color/darkBlue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/noResultsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Không có tour cần tìm"
+                    android:textAlignment="center"
+                    android:textColor="@color/darkBlue"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/searchResultsTitle" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSearchResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/searchResultsTitle" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarSearch"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewSearchResults"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/recyclerViewSearchResults" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <!-- Slider ViewPager -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
