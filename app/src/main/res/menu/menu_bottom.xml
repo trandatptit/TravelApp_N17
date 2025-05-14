@@ -4,28 +4,28 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/bottom_btn1"
-        android:title="Home"
+        android:title="Trang chủ"
         app:cnb_backgroundColor="@color/blue"
         app:cnb_iconColor="@color/white"
         />
     <item
         android:id="@+id/history"
         android:icon="@drawable/bottom_btn2"
-        android:title="History"
+        android:title="Lịch sử"
         app:cnb_backgroundColor="@color/blue"
         app:cnb_iconColor="@color/white"
         />
     <item
         android:id="@+id/bookmark"
         android:icon="@drawable/bottom_btn3"
-        android:title="Bookmark"
+        android:title="Đánh dấu"
         app:cnb_backgroundColor="@color/blue"
         app:cnb_iconColor="@color/white"
         />
     <item
         android:id="@+id/profile"
         android:icon="@drawable/bottom_btn4"
-        android:title="Profile"
+        android:title="Cá nhân"
         app:cnb_backgroundColor="@color/blue"
         app:cnb_iconColor="@color/white"
         />

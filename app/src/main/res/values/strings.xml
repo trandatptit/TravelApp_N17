@@ -5,4 +5,34 @@
         khám phá những điều tuyệt vời trên thế giới.</string>
 
     <string name="default_web_client_id">218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com</string>
+
+    <string name="back">Trở về</string>
+    <string name="booking_details">Chi tiết đặt vé</string>
+    <string name="tour_image">Ảnh chuyến đi</string>
+
+    <!-- Booking Information Section -->
+    <string name="booking_information">Thông tin đặt vé</string>
+    <string name="order_id">Mã vé</string>
+    <string name="booking_date">Ngày đặt</string>
+    <string name="status">Trạng thái</string>
+
+    <!-- Tour Details Section -->
+    <string name="tour_details">Chi tiết chuyến đi</string>
+    <string name="tour_name">Tên chuyến đi</string>
+    <string name="location">Địa điểm</string>
+    <string name="travel_date">Ngày đi</string>
+    <string name="departure_time">Thời gian khởi hành</string>
+    <string name="duration">Thời gian ở lại</string>
+    <string name="tour_description">Mô tả</string>
+
+    <!-- Payment Details Section -->
+    <string name="payment_details">Chi tiết thanh toán</string>
+    <string name="quantity">Số lượng</string>
+    <string name="unit_price">Giá</string>
+    <string name="total">Tổng tiền</string>
+
+    <!-- Status Values -->
+    <string name="status_paid">Paid</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_cancelled">Cancelled</string>
 </resources>

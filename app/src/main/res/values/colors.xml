@@ -7,5 +7,41 @@
     <color name="lightGray">#efefef</color>
     <color name="navyBLue">#1F41BB</color>
     <color name="aliceBlue">#F1F4FF</color>
+    <color name="red">#F44336</color>
+    <color name="green">#85F436</color>
     <color name="imageBackground">#F0F0F0</color>
+    <color name="darkGray">#494C52</color>
+    <color name="colorPrimary">#1976D2</color>
+    <color name="colorPrimaryDark">#1565C0</color>
+    <color name="colorAccent">#2196F3</color>
+
+    <!-- Background Colors -->
+
+    <color name="background_grey">#F5F5F5</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Status Colors -->
+    <color name="status_paid">#4CAF50</color>
+    <color name="status_pending">#FF9800</color>
+    <color name="status_cancelled">#F44336</color>
+
+    <!-- Status Background Colors -->
+    <color name="bg_status_paid">#E8F5E9</color>
+    <color name="bg_status_pending">#FFF3E0</color>
+    <color name="bg_status_cancelled">#FFEBEE</color>
+
+    <!-- Divider Colors -->
+    <color name="divider">#E0E0E0</color>
+
+    <color name="blue_50">#EFF6FF</color>
+    <color name="blue_500">#3B82F6</color>
+    <color name="blue_600">#2563EB</color>
+    <color name="gray_100">#F3F4F6</color>
+    <color name="gray_400">#9CA3AF</color>
+    <color name="gray_500">#6B7280</color>
+    <color name="gray_700">#374151</color>
+    <color name="gray_800">#1F2937</color>
 </resources>
