@@ -13,7 +13,28 @@
           "package_name": "com.example.travelapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "218334950542-6cpdmsqa5g2v4g8mns2as6kurbj9vqbh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travelapp",
+            "certificate_hash": "96da79ad65f97a7932fe2470debf13d28e6650c2"
+          }
+        },
+        {
+          "client_id": "218334950542-b567ing98d9b0cb2foapq6g6t9dubtkv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travelapp",
+            "certificate_hash": "ee27bfb4914af8a78a3d2fe3b956298ba66c7797"
+          }
+        },
+        {
+          "client_id": "218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDt_6NK9NggSjjXa2KvZ9gXu-_ODMDhPmE"
@@ -21,7 +42,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -32,7 +58,12 @@
           "package_name": "com.example.travelapp_n17"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDt_6NK9NggSjjXa2KvZ9gXu-_ODMDhPmE"
@@ -40,7 +71,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218334950542-h8jetoitps6vodlkur25jn631p39io0e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -64,6 +64,10 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
     implementation files('library/zpdk-release-v3.1.aar')
+    implementation libs.swiperefreshlayout
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth
+    implementation libs.googleid
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

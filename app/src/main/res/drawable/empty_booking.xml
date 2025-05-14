@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="500"
+    android:viewportHeight="500">
+
+    <!-- Background shape -->
+    <path
+        android:fillColor="#F5F7FA"
+        android:pathData="M100,100 L400,100 L400,400 L100,400 Z" />
+
+    <!-- Calendar Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M125,150 L375,150 L375,375 L125,375 Z" />
+
+    <!-- Calendar Shadow -->
+    <path
+        android:fillColor="#E0E6ED"
+        android:pathData="M125,150 L375,150 L375,375 L375,375 L375,385 L115,385 L115,160 Z" />
+
+    <!-- Calendar Border -->
+    <path
+        android:fillColor="@color/blue"
+        android:strokeColor="@color/blue"
+        android:strokeWidth="2"
+        android:pathData="M125,150 L375,150 L375,375 L125,375 Z" />
+
+    <!-- Calendar Header -->
+    <path
+        android:fillColor="@color/blue"
+        android:pathData="M125,150 L375,150 L375,190 L125,190 Z" />
+
+    <!-- Calendar Tabs -->
+    <path
+        android:fillColor="@color/blue"
+        android:pathData="M150,130 L170,130 L170,150 L150,150 Z" />
+    <path
+        android:fillColor="@color/blue"
+        android:pathData="M330,130 L350,130 L350,150 L330,150 Z" />
+
+    <!-- Calendar Grid Lines - Horizontal -->
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M125,230 L375,230" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M125,270 L375,270" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M125,310 L375,310" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M125,350 L375,350" />
+
+    <!-- Calendar Grid Lines - Vertical -->
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M175,190 L175,375" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M225,190 L225,375" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M275,190 L275,375" />
+    <path
+        android:strokeColor="#CCCCCC"
+        android:strokeWidth="2"
+        android:pathData="M325,190 L325,375" />
+
+    <!-- Empty State Symbol (Cross) -->
+    <path
+        android:strokeColor="@color/red"
+        android:strokeWidth="8"
+        android:pathData="M200,250 L300,350" />
+    <path
+        android:strokeColor="@color/red"
+        android:strokeWidth="8"
+        android:pathData="M300,250 L200,350" />
+
+    <!-- Plane Icon -->
+    <path
+        android:fillColor="@color/darkBlue"
+        android:pathData="M400,125 L440,145 L410,165 L440,185 L400,205 L385,165 Z" />
+    <path
+        android:strokeColor="@color/darkBlue"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M385,165 C375,180 380,210 385,235" />
+</vector>

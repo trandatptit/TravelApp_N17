@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +13,6 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.travelapp.Fragment.BookmarkFragment;
-import com.example.travelapp.Fragment.HistoryFragment;
 import com.example.travelapp.Fragment.ProfileFragment;
 import com.example.travelapp.R;
 
@@ -28,18 +24,14 @@ import com.example.travelapp.Domain.Category;
 import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.Domain.Location;
 import com.example.travelapp.Domain.SliderItems;
-import com.example.travelapp.R;
 import com.example.travelapp.databinding.ActivityMainBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import com.example.travelapp.databinding.ViewholderCategoryBinding;
 
 public class MainActivity extends BaseActivity {
 
