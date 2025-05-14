@@ -5,6 +5,8 @@
     <!--  nam thêm -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!--  nam thêm -->
 
     <application
@@ -30,6 +32,10 @@
         <activity
             android:name=".Activity.WelcomeActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activity.EditProfileActivity"
+            android:exported="false" 
+            android:windowSoftInputMode="adjustResize" />
 
 
         <activity

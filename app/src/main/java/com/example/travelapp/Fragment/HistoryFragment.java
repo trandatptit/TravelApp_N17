@@ -1,6 +1,7 @@
 package com.example.travelapp.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,14 @@ import com.example.travelapp.R;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.travelapp.Activity.LoginActivity;
 import com.example.travelapp.Activity.MainActivity;
 import com.example.travelapp.Adapter.BookingHistoryAdapter;
 import com.example.travelapp.Domain.BookingHistoryItem;
 import com.example.travelapp.R;
 import com.example.travelapp.databinding.FragmentBookingHistoryBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,11 +49,11 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
     private FirebaseDatabase database;
     private DatabaseReference ordersRef, orderDetailsRef, itemsRef;
     private static final String TAG = "HistoryFragment";
+    private FirebaseAuth mAuth;
+    private String userId;
 
     // For testing purposes, hardcode the userId
 //        private String userId = "4YWE4EwLXbRsgSnz2fDUlZZ2uu12";
-
-    private String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
     @Override
@@ -63,6 +66,20 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Initialize Firebase
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        
+        // Check if user is logged in
+        if (currentUser == null) {
+            // User not logged in, redirect to login
+            navigateToLogin();
+            return;
+        }
+        
+        // Set userId after checking authentication
+        userId = currentUser.getUid();
+        
         // Initialize Firebase references
         database = FirebaseDatabase.getInstance();
         ordersRef = database.getReference("Orders");
@@ -88,8 +105,23 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
         // Load booking history
         loadBookingHistory();
     }
+    
+    private void navigateToLogin() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
 
     private void loadBookingHistory() {
+        // Check if user is still logged in (session might expire while using the app)
+        if (mAuth.getCurrentUser() == null) {
+            navigateToLogin();
+            return;
+        }
+        
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.emptyView.getRoot().setVisibility(View.GONE);
 
@@ -97,6 +129,12 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
         ordersRef.orderByChild("userId").equalTo(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Check if user is still logged in
+                if (mAuth.getCurrentUser() == null) {
+                    navigateToLogin();
+                    return;
+                }
+                
                 bookingList.clear();
 
                 if (!dataSnapshot.exists()) {
@@ -122,6 +160,12 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
                     orderDetailsRef.child(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot orderDetailsSnapshot) {
+                            // Check if still logged in
+                            if (mAuth.getCurrentUser() == null) {
+                                navigateToLogin();
+                                return;
+                            }
+                            
                             if (orderDetailsSnapshot.exists() && orderDetailsSnapshot.getChildrenCount() > 0) {
                                 // Get the first item in order details
                                 DataSnapshot firstItem = orderDetailsSnapshot.getChildren().iterator().next();
@@ -139,6 +183,12 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
                                         database.getReference().child("Item").addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot itemsSnapshot) {
+                                                // Check if still logged in
+                                                if (mAuth.getCurrentUser() == null) {
+                                                    navigateToLogin();
+                                                    return;
+                                                }
+                                                
                                                 Log.d(TAG, "Got items snapshot, children count: " + itemsSnapshot.getChildrenCount());
 
                                                 if (itemsSnapshot.exists()) {
@@ -262,6 +312,9 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
     }
 
     private void finishLoading() {
+        // Check if the fragment is still attached to avoid crashes
+        if (!isAdded() || getActivity() == null) return;
+        
         // Sort by date (most recent first)
         Collections.sort(bookingList, (item1, item2) ->
                 item2.getBookingDate().compareTo(item1.getBookingDate()));
@@ -279,6 +332,9 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
     }
 
     private void showEmptyView() {
+        // Check if the fragment is still attached to avoid crashes
+        if (!isAdded() || getActivity() == null) return;
+        
         binding.progressBar.setVisibility(View.GONE);
         binding.swipeRefreshLayout.setRefreshing(false);
         binding.bookingRecyclerView.setVisibility(View.GONE);
@@ -299,6 +355,12 @@ public class HistoryFragment extends Fragment implements BookingHistoryAdapter.O
 
     @Override
     public void onBookingItemClick(BookingHistoryItem item) {
+        // Check if user is still logged in
+        if (mAuth.getCurrentUser() == null) {
+            navigateToLogin();
+            return;
+        }
+        
         // Navigate to booking details fragment
         BookingDetailsFragment detailsFragment = BookingDetailsFragment.newInstance(item.getOrderId());
         requireActivity().getSupportFragmentManager().beginTransaction()
