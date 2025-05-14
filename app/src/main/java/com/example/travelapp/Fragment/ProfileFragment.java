@@ -23,6 +23,9 @@ import com.example.travelapp.Activity.LoginActivity;
 import com.example.travelapp.Activity.MainActivity;
 import com.example.travelapp.Domain.User;
 import com.example.travelapp.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,6 +50,7 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference userRef;
     private FirebaseUser currentUser;
     private User userData;
+    private GoogleSignInClient mGoogleSignInClient;
 
     public ProfileFragment() {
         // Bắt buộc phải có constructor rỗng
@@ -59,6 +63,14 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate profile_user.xml layout
         View view = inflater.inflate(R.layout.profile_user, container, false);
+
+        // Cấu hình Google Sign-In (giống như trong LoginActivity)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         
         // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -214,11 +226,15 @@ public class ProfileFragment extends Fragment {
             // Confirm logout
             Toast.makeText(getContext(), "Logging out...", Toast.LENGTH_SHORT).show();
             
-            // Sign out from Firebase
-            mAuth.signOut();
-            
-            // Navigate to login screen
-            navigateToLogin();
+//            // Sign out from Firebase
+//            mAuth.signOut();
+            // Đăng xuất khỏi Google
+            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                // Đăng xuất khỏi Firebase
+                mAuth.signOut();
+                // Chuyển về màn hình đăng nhập
+                navigateToLogin();
+            });
         });
     }
     
