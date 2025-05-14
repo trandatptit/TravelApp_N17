@@ -36,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import com.example.travelapp.databinding.ViewholderCategoryBinding;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
+
 public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
@@ -66,16 +68,8 @@ public class MainActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-//        // Cấu hình Google Sign-In (giống như trong LoginActivity)
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id)) // Lấy từ strings.xml
-//                .requestEmail()
-//                .build();
-//
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//
-//        // Xử lý sự kiện nút "Đăng xuất"
-//        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
+        // Setup bottom navigation
+        setupBottomNavigation();
 
         // Các hàm khởi tạo khác
         initLocation();
@@ -85,30 +79,26 @@ public class MainActivity extends BaseActivity {
         initRecommentded();
     }
 
+    private void setupBottomNavigation() {
+        binding.bottomNav.setItemSelected(R.id.exporer, true); // Default selected item
 
-//    // ========== HIỂN THỊ DIALOG XÁC NHẬN ĐĂNG XUẤT ==========
-//    private void showSignOutDialog() {
-//        new AlertDialog.Builder(this)
-//                .setTitle("Xác nhận đăng xuất")
-//                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
-//                .setPositiveButton("Đồng ý", (dialog, which) -> signOut()) // Xác nhận đăng xuất
-//                .setNegativeButton("Hủy", null) // Hủy bỏ đăng xuất
-//                .setCancelable(true)
-//                .show();
-//    }
-//
-//    // ========== ĐĂNG XUẤT ==========
-//    private void signOut() {
-//        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-//            FirebaseAuth.getInstance().signOut();  // Đăng xuất Firebase
-//            Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
-//
-//            // Chuyển hướng về màn hình đăng nhập
-//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//            startActivity(intent);
-//            finish(); // Kết thúc màn hình hiện tại
-//        });
-//    }
+        binding.bottomNav.setOnItemSelectedListener(id -> {
+            if (id == R.id.profile) {
+                // Open the profile activity
+                Intent profileIntent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(profileIntent);
+                // Reset the selection to home after clicking
+                binding.bottomNav.setItemSelected(R.id.exporer, true);
+            } else if (id == R.id.favorites) {
+                // Handle favorites menu item
+                Toast.makeText(MainActivity.this, "Explorer selected", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.cart) {
+                // Handle cart menu item
+                Toast.makeText(MainActivity.this, "Bookmark selected", Toast.LENGTH_SHORT).show();
+            }
+            // If it's R.id.exporer or any other case, do nothing (already in home/main screen)
+        });
+    }
 
     private void initCategory() {
         DatabaseReference myRef = database.getReference("Category");
@@ -139,9 +129,7 @@ public class MainActivity extends BaseActivity {
                                 initPopular(); // Tải lại tất cả Popular
                             }
                         });
-                        binding.recyclerViewCategory
-
-                                .setAdapter(adapter);
+                        binding.recyclerViewCategory.setAdapter(adapter);
                     }
                     binding.progressBarCategory.setVisibility(View.GONE);
                 }
