@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.travelapp.Fragment.BookmarkFragment;
+import com.example.travelapp.Fragment.HistoryFragment;
 import com.example.travelapp.Fragment.ProfileFragment;
 import com.example.travelapp.R;
 
