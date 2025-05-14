@@ -16,6 +16,7 @@
         android:paddingBottom="70dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Rest of your content remains the same -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -272,20 +273,27 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation Bar -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="70dp"
+        android:visibility="gone" />
+
+    <!-- ChipNavigationBar fixed positioning -->
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
-        android:id="@+id/bottom_nav"
+        android:id="@+id/chipNavigation"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        android:elevation="16dp"
+        android:elevation="3dp"
         android:padding="4dp"
-        app:cnb_iconColor="@color/white"
         app:cnb_iconSize="20dp"
         app:cnb_menuResource="@menu/menu_bottom"
-        app:cnb_orientationMode="horizontal"
+        app:cnb_iconColor="@color/white"
         app:cnb_radius="50dp"
+        app:cnb_orientationMode="horizontal"
         app:cnb_unselectedColor="@color/darkBlue" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
