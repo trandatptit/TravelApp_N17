@@ -47,7 +47,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
         if (isCompactLayout) {
             ViewholderPopularCompactBinding binding = ViewholderPopularCompactBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            // Định dạng số theo định dạng tiền tệ Việt Nam
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
             String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
             binding.priceTxt.setText(formattedPrice);

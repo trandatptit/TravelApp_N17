@@ -52,9 +52,7 @@ public class ProfileFragment extends Fragment {
     private User userData;
     private GoogleSignInClient mGoogleSignInClient;
 
-    public ProfileFragment() {
-        // Bắt buộc phải có constructor rỗng
-    }
+    public ProfileFragment() {}
 
     @Nullable
     @Override
@@ -63,27 +61,17 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate profile_user.xml layout
         View view = inflater.inflate(R.layout.profile_user, container, false);
-
-        // Cấu hình Google Sign-In (giống như trong LoginActivity)
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-        
-        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         currentUser = mAuth.getCurrentUser();
-        
-        // Initialize views
         initViews(view);
-        
-        // Load user data
         loadUserData();
-        
-        // Set up click listeners
         setupClickListeners();
         
         return view;
@@ -185,34 +173,28 @@ public class ProfileFragment extends Fragment {
     
     private void setupClickListeners() {
         btnEditProfile.setOnClickListener(v -> {
-            // Navigate to EditProfileActivity
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             startActivity(intent);
         });
         
         personalInfoLayout.setOnClickListener(v -> {
-            // Show personal info in modal bottom sheet
             showProfileInfoBottomSheet("Thông tin cá nhân");
         });
         
         emailLayout.setOnClickListener(v -> {
-            // Show email info in modal bottom sheet
             showProfileInfoBottomSheet("Địa chỉ email");
         });
         
         billingLayout.setOnClickListener(v -> {
-            // Navigate to History fragment for billing details
             navigateToHistoryTab();
         });
         
         tourManagementLayout.setOnClickListener(v -> {
-            // Navigate to History fragment for tour management
             navigateToHistoryTab();
         });
         
         passwordLayout.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Password clicked", Toast.LENGTH_SHORT).show();
-            // Navigate to password change screen
             if (userData != null && userData.getAuthProvider() != null) {
                 if (!userData.getAuthProvider().equals("password")) {
                     Toast.makeText(getContext(), 
@@ -223,16 +205,10 @@ public class ProfileFragment extends Fragment {
         });
         
         logoutLayout.setOnClickListener(v -> {
-            // Confirm logout
             Toast.makeText(getContext(), "Logging out...", Toast.LENGTH_SHORT).show();
-            
-//            // Sign out from Firebase
-//            mAuth.signOut();
-            // Đăng xuất khỏi Google
+
             mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
-                // Đăng xuất khỏi Firebase
                 mAuth.signOut();
-                // Chuyển về màn hình đăng nhập
                 navigateToLogin();
             });
         });

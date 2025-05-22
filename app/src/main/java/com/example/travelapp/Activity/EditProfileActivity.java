@@ -67,13 +67,11 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile);
 
-        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
 
         if (currentUser == null) {
-            // If not logged in, redirect to login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -110,13 +108,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 config.put("cloud_name", "dcwumv8cx");
                 config.put("api_key", "645165865312542");
                 config.put("api_secret", "SlE0JlELpfhljFfNkKRYqYUjzVw");
-                
-                // Khởi tạo MediaManager một cách an toàn
+
                 try {
                     MediaManager.init(this, config);
                     isCloudinaryInitialized = true;
                 } catch (IllegalStateException e) {
-                    // MediaManager đã được khởi tạo, không cần làm gì
                     isCloudinaryInitialized = true;
                 }
             } catch (Exception e) {
@@ -242,7 +238,6 @@ public class EditProfileActivity extends AppCompatActivity {
         updates.put("birthDate", birthDate);
 
         if (userData.getAuthProvider() != null && userData.getAuthProvider().equals("password")) {
-            // Only update email if using password auth
             if (!email.equals(userData.getEmail()) && !email.isEmpty()) {
                 updates.put("email", email);
                 // Update Firebase Auth email
@@ -256,7 +251,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         });
             }
 
-            // Update password if provided
             if (!password.isEmpty()) {
                 currentUser.updatePassword(password)
                         .addOnCompleteListener(task -> {
@@ -280,41 +274,32 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void uploadImageToCloudinary(Map<String, Object> updates) {
         Toast.makeText(this, "Đang tải ảnh lên...", Toast.LENGTH_SHORT).show();
-        
-        // Tạo tên file duy nhất cho mỗi người dùng
+
         String fileName = "profile_" + currentUser.getUid();
         
         try {
-            // Cấu hình upload - sử dụng Signed Upload thay vì Upload Preset
             MediaManager.get().upload(selectedImageUri)
                     .option("public_id", fileName)
                     .option("folder", "travel_app_profiles")
-                    // Không cần thiết lập upload_preset vì đã cấu hình API Secret
                     .callback(new UploadCallback() {
                         @Override
-                        public void onStart(String requestId) {
-                            // Bắt đầu upload
-                        }
+                        public void onStart(String requestId) {}
 
                         @Override
                         public void onProgress(String requestId, long bytes, long totalBytes) {
-                            // Tiến độ upload - có thể thêm ProgressBar ở đây nếu muốn
                             int progress = (int) ((bytes * 100) / totalBytes);
                         }
 
                         @Override
                         public void onSuccess(String requestId, Map resultData) {
-                            // Upload thành công
                             String imageUrl = resultData.get("secure_url").toString();
                             updates.put("photoUrl", imageUrl);
-                            
-                            // Cập nhật dữ liệu người dùng vào Firebase 
+
                             updateUserData(updates);
                         }
 
                         @Override
                         public void onError(String requestId, ErrorInfo error) {
-                            // Lỗi khi upload
                             Toast.makeText(EditProfileActivity.this,
                                     "Lỗi tải ảnh lên: " + error.getDescription(),
                                     Toast.LENGTH_SHORT).show();
@@ -324,7 +309,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         @Override
                         public void onReschedule(String requestId, ErrorInfo error) {
-                            // Upload bị hoãn lại
                             Toast.makeText(EditProfileActivity.this,
                                     "Tải ảnh bị trì hoãn, đang thử lại...",
                                     Toast.LENGTH_SHORT).show();

@@ -34,7 +34,6 @@ public class PopularSeeAllActivity extends BaseActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot data : snapshot.getChildren()) {
                     ItemDomain item = data.getValue(ItemDomain.class);
-                    // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
                     if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
                         list.add(item);
                     }
