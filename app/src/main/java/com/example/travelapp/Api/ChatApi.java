@@ -13,7 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ChatApi {
-    private static final String CHAT_API_URL = "https://d515-113-23-6-39.ngrok-free.app/chat";
+    private static final String CHAT_API_URL = "https://9f25-1-54-208-208.ngrok-free.app/chat";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public interface ChatCallback {

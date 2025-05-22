@@ -26,10 +26,12 @@ import com.example.travelapp.Adapter.PopularAdapter;
 import com.example.travelapp.Adapter.RecommentdedAdapter;
 import com.example.travelapp.Adapter.SearchResultsAdapter;
 import com.example.travelapp.Adapter.SliderAdapter;
+import com.example.travelapp.Adapter.ChatAdapter;
 import com.example.travelapp.Domain.Category;
 import com.example.travelapp.Domain.ItemDomain;
 import com.example.travelapp.Domain.Location;
 import com.example.travelapp.Domain.SliderItems;
+import com.example.travelapp.Domain.ChatMessage;
 import com.example.travelapp.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +54,7 @@ public class MainActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private SearchResultsAdapter searchResultsAdapter;
-    private ArrayList<ItemDomain> allItems = new ArrayList<>(); // Danh sách tất cả các item để tìm kiếm
+    private ArrayList<ItemDomain> allItems = new ArrayList<>(); // List item for search
     
     // Chat adapter and message list
     private ChatAdapter chatAdapter;
@@ -77,10 +79,10 @@ public class MainActivity extends BaseActivity {
             fragment = new HistoryFragment();
         } else if (tabId == R.id.bookmark) {
             // Điều hướng tới BookmarkFragment
-            fragment = new BookmarkFragment();  // Đảm bảo rằng bạn đã tạo lớp BookmarkFragment
+            fragment = new BookmarkFragment();
         } else if (tabId == R.id.profile) {
             // Điều hướng tới ProfileFragment
-            fragment = new ProfileFragment();  // Đảm bảo rằng bạn đã tạo lớp ProfileFragment
+            fragment = new ProfileFragment();
         }
 
         if (fragment != null) {
@@ -111,10 +113,10 @@ public class MainActivity extends BaseActivity {
         //Xử lý phần chuyển cu chipNavigation
         binding.chipNavigation.setOnItemSelectedListener(this::navigateToTab);
 
-        // Nút see all cho phần recommend
+        // Click listener for see all recommended
         binding.textView6.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RecommendedSeeAllActivity.class);
-            intent.putExtra("categoryId", selectedCategoryId); // Truyền categoryId
+            intent.putExtra("categoryId", selectedCategoryId);
             startActivity(intent);
         });
 
@@ -138,16 +140,12 @@ public class MainActivity extends BaseActivity {
 //        // Xử lý sự kiện nút "Đăng xuất"
 //        binding.signOutBtn.setOnClickListener(v -> showSignOutDialog());
 
-        // Khởi tạo RecyclerView cho kết quả tìm kiếm
         setupSearchResults();
-        
-        // Khởi tạo tìm kiếm
+
         setupSearch();
-        
-        // Nạp dữ liệu cho tìm kiếm
+
         loadAllItems();
-        
-        // Các hàm khởi tạo khác
+
         initLocation();
         initBanner();
         initCategory();
@@ -162,7 +160,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupSearch() {
-        // Đặt sự kiện click cho nút tìm kiếm
         binding.textView4.setOnClickListener(v -> {
             String query = binding.editTextText.getText().toString().trim();
             if (!query.isEmpty()) {
@@ -170,7 +167,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        // Theo dõi thay đổi văn bản để tìm kiếm tự động
         binding.editTextText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -179,10 +175,8 @@ public class MainActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString().trim();
                 if (query.isEmpty()) {
-                    // Ẩn kết quả tìm kiếm nếu trống
                     binding.searchResultsLayout.setVisibility(View.GONE);
                 } else {
-                    // Thực hiện tìm kiếm khi người dùng nhập
                     performSearch(query);
                 }
             }
@@ -192,8 +186,8 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    // load all items from database
     private void loadAllItems() {
-        // Lấy tất cả các mục từ cơ sở dữ liệu để tìm kiếm
         DatabaseReference itemsRef = database.getReference("Item");
         
         itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -209,9 +203,6 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 }
-                
-                // Thêm các mục từ danh sách Popular
-                loadPopularItems();
             }
 
             @Override
@@ -230,8 +221,6 @@ public class MainActivity extends BaseActivity {
                         ItemDomain item = issue.getValue(ItemDomain.class);
                         if (item != null) {
                             item.setId(issue.getKey());
-                            
-                            // Kiểm tra xem item đã tồn tại chưa (tránh trùng lặp)
                             boolean exists = false;
                             for (ItemDomain existingItem : allItems) {
                                 if (existingItem.getId().equals(item.getId())) {
@@ -239,7 +228,6 @@ public class MainActivity extends BaseActivity {
                                     break;
                                 }
                             }
-                            
                             if (!exists) {
                                 allItems.add(item);
                             }
@@ -254,18 +242,14 @@ public class MainActivity extends BaseActivity {
     }
 
     private void performSearch(String query) {
-        // Hiển thị khu vực kết quả tìm kiếm
         binding.searchResultsLayout.setVisibility(View.VISIBLE);
         binding.progressBarSearch.setVisibility(View.VISIBLE);
-        
-        // Chuyển chuỗi tìm kiếm sang chữ thường
+
         String lowercaseQuery = query.toLowerCase();
-        
-        // Lọc kết quả
+
         ArrayList<ItemDomain> searchResults = new ArrayList<>();
         
         for (ItemDomain item : allItems) {
-            // Tìm kiếm theo title, address hoặc description
             boolean matchesTitle = item.getTitle() != null && item.getTitle().toLowerCase().contains(lowercaseQuery);
             boolean matchesAddress = item.getAddress() != null && item.getAddress().toLowerCase().contains(lowercaseQuery);
             boolean matchesDescription = item.getDescription() != null && item.getDescription().toLowerCase().contains(lowercaseQuery);
@@ -274,8 +258,7 @@ public class MainActivity extends BaseActivity {
                 searchResults.add(item);
             }
         }
-        
-        // Cập nhật UI dựa trên kết quả
+
         if (searchResults.isEmpty()) {
             binding.noResultsText.setVisibility(View.VISIBLE);
             binding.recyclerViewSearchResults.setVisibility(View.GONE);
@@ -365,10 +348,9 @@ public class MainActivity extends BaseActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         ItemDomain item = issue.getValue(ItemDomain.class);
-                        // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
 
                         if (item != null) {
-                            item.setId(issue.getKey()); // ✅ GÁN ID ở đây
+                            item.setId(issue.getKey());
 
                             // Lọc theo category nếu có
                             if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
@@ -382,7 +364,7 @@ public class MainActivity extends BaseActivity {
                         RecyclerView.Adapter adapter = new RecommentdedAdapter(list, true);
                         binding.recyclerViewRecommended.setAdapter(adapter);
                     } else {
-                        binding.recyclerViewRecommended.setAdapter(null); // Xóa danh sách nếu không có item
+                        binding.recyclerViewRecommended.setAdapter(null);
                     }
                     binding.progressBarRecommended.setVisibility(View.GONE);
                 }
@@ -404,12 +386,11 @@ public class MainActivity extends BaseActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         ItemDomain item = issue.getValue(ItemDomain.class);
-                        // Chỉ thêm item nếu categoryId khớp hoặc không có bộ lọc
 
                         if (item != null) {
-                            item.setId(issue.getKey()); // ✅ GÁN ID ở đây
+                            item.setId(issue.getKey());
 
-                            // Lọc theo category nếu có
+                            // filter by category (if have)
                             if (selectedCategoryId == -1 || item.getCategoryId() == selectedCategoryId) {
                                 list.add(item);
                             }
@@ -559,81 +540,5 @@ public class MainActivity extends BaseActivity {
         chatMessages.add(chatMessage);
         chatAdapter.notifyItemInserted(chatMessages.size() - 1);
         binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
-    }
-}
-
-// Chat Message Class
-class ChatMessage {
-    private String message;
-    private boolean isUser;
-    
-    public ChatMessage(String message, boolean isUser) {
-        this.message = message;
-        this.isUser = isUser;
-    }
-    
-    public String getMessage() {
-        return message;
-    }
-    
-    public boolean isUser() {
-        return isUser;
-    }
-}
-
-// Chat Adapter
-class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
-    private ArrayList<ChatMessage> chatMessages;
-    private Markwon markwon;
-    
-    public ChatAdapter(ArrayList<ChatMessage> chatMessages, Markwon markwon) {
-        this.chatMessages = chatMessages;
-        this.markwon = markwon;
-    }
-    
-    @Override
-    public int getItemViewType(int position) {
-        return chatMessages.get(position).isUser() ? 0 : 1;
-    }
-    
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull android.view.ViewGroup parent, int viewType) {
-        View view;
-        if (viewType == 0) { // User message
-            view = android.view.LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_user, parent, false);
-        } else { // Bot message
-            view = android.view.LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_bot, parent, false);
-        }
-        return new ViewHolder(view);
-    }
-    
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChatMessage message = chatMessages.get(position);
-        
-        if (message.isUser()) {
-            // Regular text for user messages
-            holder.messageText.setText(message.getMessage());
-        } else {
-            // Markdown rendering for bot messages
-            markwon.setMarkdown(holder.messageText, message.getMessage());
-        }
-    }
-    
-    @Override
-    public int getItemCount() {
-        return chatMessages.size();
-    }
-    
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        android.widget.TextView messageText;
-        
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            messageText = itemView.findViewById(R.id.messageTextView);
-        }
     }
 }

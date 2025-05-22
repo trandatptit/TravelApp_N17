@@ -50,7 +50,6 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
             ViewholderRecommendedCompactBinding binding = ViewholderRecommendedCompactBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
 
-            // Định dạng số theo định dạng tiền tệ Việt Nam
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
             String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
             binding.priceTxt.setText(formattedPrice);
@@ -61,7 +60,6 @@ public class RecommentdedAdapter extends RecyclerView.Adapter<RecommentdedAdapte
         } else {
             ViewholderRecommendedBinding binding = ViewholderRecommendedBinding.bind(holder.itemView);
             binding.titleTxt.setText(item.getTitle());
-            // Định dạng số theo định dạng tiền tệ Việt Nam
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
             String formattedPrice = currencyFormatter.format(item.getPrice()) + " VND";
             binding.priceTxt.setText(formattedPrice);
